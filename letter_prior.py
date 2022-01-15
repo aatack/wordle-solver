@@ -4,7 +4,7 @@ from typing import Callable, Dict, Iterator
 
 import matplotlib.pyplot as plt
 
-ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+from parameters import ALPHABET, INFERENCE_FACTOR
 
 
 class LetterPrior:
@@ -35,3 +35,17 @@ class LetterPrior:
     @property
     def entropy(self) -> float:
         return sum(-p * log(p) for p in self._probabilities.values())
+
+    def feedback_black(self, letter: str):
+        del self._probabilities[letter]
+
+    def feedback_yellow(self, letter: str):
+        # NOTE: called for a yellow in a different position; yellows in this position
+        #       will actually lead to a black feedback given to this prior
+        self._probabilities[letter] *= INFERENCE_FACTOR
+
+    def feedback_green(self, letter: str):
+        letters = set(self._probabilities.keys())
+        letters.remove(letter)
+        for _letter in letters:
+            del self._probabilities[_letter]

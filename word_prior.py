@@ -2,7 +2,14 @@ from typing import Callable, Iterator, List
 
 import matplotlib.pyplot as plt
 
-from letter_prior import ALPHABET, LetterPrior
+from letter_prior import LetterPrior
+from parameters import ALPHABET
+
+
+class Colours:
+    BLACK = 0
+    YELLOW = 1
+    GREEN = 2
 
 
 class WordPrior:
@@ -32,3 +39,21 @@ class WordPrior:
     @property
     def total_entropy(self) -> float:
         return sum(prior.entropy for prior in self._letter_priors)
+
+    def feedback(self, word: str, colours: List[int]):
+        for index, (letter, colour) in enumerate(zip(word, colours)):
+            if colour == Colours.BLACK:
+                self._letter_priors[index].feedback_black(letter)
+
+            elif colour == Colours.YELLOW:
+                for i, prior in enumerate(self._letter_priors):
+                    if i == index:
+                        prior.feedback_black(letter)
+                    else:
+                        prior.feedback_yellow(letter)
+
+            elif colour == Colours.GREEN:
+                self._letter_priors[index].feedback_green(letter)
+
+            else:
+                raise ValueError("Invalid colour")
