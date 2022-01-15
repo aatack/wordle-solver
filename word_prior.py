@@ -97,11 +97,14 @@ class WordPrior:
     def best_guess_minimise_entropy(
         self, vocabulary: "Vocabulary"
     ) -> Tuple[str, float]:
-        count = 100
+        answers_count = 20
+        guesses_count = 20
+
+        # TODO: turn these into policy hyperparameters
 
         # answers = vocabulary.sample(count, self)
-        answers = [self.sample() for _ in range(count)]
-        guesses = vocabulary.uniform_sample(count)
+        answers = [self.sample() for _ in range(answers_count)]
+        guesses = vocabulary.uniform_sample(guesses_count)
         # guesses = vocabulary.sample(count, self)
 
         ratios = [(word, self.entropy_ratio(word, answers)) for word in tqdm(guesses)]

@@ -3,11 +3,18 @@ from word_prior import WordPrior
 
 to_use = comprehensive
 
-prior = WordPrior.prior(to_use)
-# prior = WordPrior.uniform()
+# TODO: turn this into a hyperparameter
+
+# prior = WordPrior.prior(to_use)
+prior = WordPrior.uniform()
 vocabulary = Vocabulary(set(to_use()))
 
+current_guess = 0
 while True:
+    current_guess += 1
+
+    print("\n" * 5)
+    print("Current guess:", current_guess)
     print(
         prior.best_guess_guess_answer(vocabulary),
         prior.best_guess_minimise_entropy(vocabulary),
@@ -20,7 +27,7 @@ while True:
     # vocabulary.prune(prior)
     print(f"Words remaining: {len(vocabulary)}")
 
-    print("Current prior:")
+    print(f"Current prior: (entropy = {prior.total_entropy})")
     print(prior)
     print()
 
