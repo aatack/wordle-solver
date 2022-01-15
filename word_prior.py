@@ -101,8 +101,8 @@ class WordPrior:
 
         # answers = vocabulary.sample(count, self)
         answers = [self.sample() for _ in range(count)]
-        # guesses = vocabulary.uniform_sample(count)
-        guesses = vocabulary.sample(count, self)
+        guesses = vocabulary.uniform_sample(count)
+        # guesses = vocabulary.sample(count, self)
 
         ratios = [(word, self.entropy_ratio(word, answers)) for word in tqdm(guesses)]
         return min(ratios, key=lambda p: p[1])

@@ -1,9 +1,11 @@
 from vocabulary import Vocabulary, basic, comprehensive
 from word_prior import WordPrior
 
-# prior = WordPrior.prior(basic)
-prior = WordPrior.uniform()
-vocabulary = Vocabulary(set(basic()))
+to_use = comprehensive
+
+prior = WordPrior.prior(to_use)
+# prior = WordPrior.uniform()
+vocabulary = Vocabulary(set(to_use()))
 
 while True:
     print(
