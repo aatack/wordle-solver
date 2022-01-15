@@ -1,3 +1,9 @@
+class Colours:
+    BLACK = 0
+    YELLOW = 1
+    GREEN = 2
+
+
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 
 # Somewhat arbitrary factor that corresponds to the amount by which we boost the prior

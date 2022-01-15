@@ -1,16 +1,11 @@
 from copy import deepcopy
-from typing import Callable, Iterator, List, Tuple
+from typing import Callable, Iterator, List, Optional, Set, Tuple
 
 import matplotlib.pyplot as plt
 
+from feedback import generate_feedback
 from letter_prior import LetterPrior
-from parameters import ALPHABET
-
-
-class Colours:
-    BLACK = 0
-    YELLOW = 1
-    GREEN = 2
+from parameters import ALPHABET, Colours
 
 
 class WordPrior:
@@ -64,3 +59,30 @@ class WordPrior:
 
     def copy(self) -> "WordPrior":
         return deepcopy(self)
+
+    def merge(self, other: "WordPrior"):
+        for left, right in zip(self._letter_priors, other._letter_priors):
+            left.merge(right)
+
+    def posterior(self, guess: str, answers: List[str]) -> "WordPrior":
+        posterior: Optional[WordPrior] = None
+
+        for answer in answers:
+            copy = self.copy()
+            copy.feedback(guess, generate_feedback(guess, answer))
+            if posterior is None:
+                posterior = copy
+            else:
+                posterior.merge(copy)
+
+        posterior.normalise()
+        return posterior
+
+    def entropy_ratio(self, guess: str, answers: List[str]) -> float:
+        return self.posterior(guess, answers).total_entropy / self.total_entropy
+
+    def best_guess_minimise_entropy(self, vocabulary: Set[str]) -> str:
+        raise NotImplementedError()
+
+    def best_guess_guess_answer(self, vocabulary: Set[str]) -> str:
+        raise NotImplementedError()

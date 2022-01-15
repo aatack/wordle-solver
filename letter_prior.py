@@ -35,7 +35,7 @@ class LetterPrior:
 
     @property
     def entropy(self) -> float:
-        return sum(-p * log(p) for p in self._probabilities.values())
+        return sum(-p * log(p) for p in self._probabilities.values() if p > 0.0)
 
     def feedback_black(self, letter: str):
         del self._probabilities[letter]
@@ -64,3 +64,9 @@ class LetterPrior:
             if cumulative >= threshold:
                 return letter
         return "z"
+
+    def merge(self, other: "LetterPrior"):
+        for letter in ALPHABET:
+            if letter not in self._probabilities:
+                self._probabilities[letter] = 0.0
+            self._probabilities[letter] += other[letter]
