@@ -1,4 +1,5 @@
 from copy import deepcopy
+from random import uniform
 from typing import Callable, Iterator, List, Optional, Set, Tuple
 
 import matplotlib.pyplot as plt
@@ -56,8 +57,17 @@ class WordPrior:
             else:
                 raise ValueError("Invalid colour")
 
-    def sample(self) -> str:
-        return "".join(prior.sample() for prior in self._letter_priors)
+    def sample(self, vocabulary: Optional[List[str]]) -> str:
+        if vocabulary is None:
+            return "".join(prior.sample() for prior in self._letter_priors)
+        else:
+            threshold = uniform(0, 1)
+            cumulative = 0.0
+            for word in vocabulary:
+                cumulative += self[word]
+                if cumulative >= threshold:
+                    return word
+            return vocabulary[-1]
 
     def copy(self) -> "WordPrior":
         return deepcopy(self)
@@ -84,9 +94,15 @@ class WordPrior:
         return self.posterior(guess, answers).total_entropy / self.total_entropy
 
     def best_guess_minimise_entropy(self, vocabulary: Set[str]) -> Tuple[str, float]:
-        answers = list(vocabulary)[:: len(vocabulary) // 12]
+        vocabulary = list(vocabulary)
+
+        count = 25
+        minimal_vocabulary = list(vocabulary)[:: len(vocabulary) // count]
+        answers = [self.sample(vocabulary) for _ in range(count)]
+
         ratios = [
-            (word, self.entropy_ratio(word, answers)) for word in tqdm(vocabulary)
+            (word, self.entropy_ratio(word, answers))
+            for word in tqdm(minimal_vocabulary)
         ]
         return min(ratios, key=lambda p: p[1])
 
