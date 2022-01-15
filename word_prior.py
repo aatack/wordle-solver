@@ -13,6 +13,12 @@ class WordPrior:
     def __init__(self, letter_priors: List[LetterPrior]):
         self._letter_priors = letter_priors
 
+    def __getitem__(self, word: str) -> float:
+        probability = 1.0
+        for letter, prior in zip(word, self._letter_priors):
+            probability *= prior[letter]
+        return probability
+
     def normalise(self):
         for prior in self._letter_priors:
             prior.normalise()
@@ -22,3 +28,7 @@ class WordPrior:
         for prior, axis in zip(self._letter_priors, axes):
             axis.plot(list(ALPHABET), [prior[letter] for letter in ALPHABET])
         plt.show()
+
+    @property
+    def total_entropy(self) -> float:
+        return sum(prior.entropy for prior in self._letter_priors)

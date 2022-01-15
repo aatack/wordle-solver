@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import log
 from typing import Callable, Dict, Iterator
 
 import matplotlib.pyplot as plt
@@ -30,3 +31,7 @@ class LetterPrior:
     def plot(self):
         plt.plot(list(ALPHABET), [self[letter] for letter in ALPHABET])
         plt.show()
+
+    @property
+    def entropy(self) -> float:
+        return sum(-p * log(p) for p in self._probabilities.values())
