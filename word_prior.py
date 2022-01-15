@@ -22,7 +22,7 @@ class WordPrior:
         probability = 1.0
         for letter, prior in zip(word, self._letter_priors):
             probability *= prior[letter]
-        return probability
+        return probability * (0.1 if len(set(word)) != 5 else 1)
 
     def normalise(self):
         for prior in self._letter_priors:
@@ -60,17 +60,8 @@ class WordPrior:
             else:
                 raise ValueError("Invalid colour")
 
-    def sample(self, vocabulary: Optional[List[str]]) -> str:
-        if vocabulary is None:
-            return "".join(prior.sample() for prior in self._letter_priors)
-        else:
-            threshold = uniform(0, 1)
-            cumulative = 0.0
-            for word in vocabulary:
-                cumulative += self[word]
-                if cumulative >= threshold:
-                    return word
-            return vocabulary[-1]
+    def sample(self) -> str:
+        return "".join(prior.sample() for prior in self._letter_priors)
 
     def copy(self) -> "WordPrior":
         return deepcopy(self)
@@ -96,18 +87,16 @@ class WordPrior:
     def entropy_ratio(self, guess: str, answers: List[str]) -> float:
         return self.posterior(guess, answers).total_entropy / self.total_entropy
 
-    def best_guess_minimise_entropy(self, vocabulary: Set[str]) -> Tuple[str, float]:
-        vocabulary = list(vocabulary)
+    def best_guess_minimise_entropy(
+        self, vocabulary: "Vocabulary"
+    ) -> Tuple[str, float]:
+        count = 50
 
-        count = 100
-        minimal_vocabulary = list(vocabulary)[:: len(vocabulary) // count]
-        answers = [self.sample(vocabulary) for _ in range(count)]
+        answers = vocabulary.sample(count, self)
+        guesses = vocabulary.uniform_sample(count)
 
-        ratios = [
-            (word, self.entropy_ratio(word, answers))
-            for word in tqdm(minimal_vocabulary)
-        ]
+        ratios = [(word, self.entropy_ratio(word, answers)) for word in tqdm(guesses)]
         return min(ratios, key=lambda p: p[1])
 
-    def best_guess_guess_answer(self, vocabulary: Set[str]) -> str:
-        return max([(word, self[word]) for word in vocabulary], key=lambda p: p[1])
+    def best_guess_guess_answer(self, vocabulary: "Vocabulary") -> str:
+        return max(vocabulary.all_words(), key=lambda word: self[word])
