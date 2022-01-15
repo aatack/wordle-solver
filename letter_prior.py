@@ -5,7 +5,7 @@ from typing import Callable, Dict, Iterator
 
 import matplotlib.pyplot as plt
 
-from parameters import ALPHABET, INFERENCE_FACTOR
+from parameters import ALPHABET, INFERENCE_FACTOR, INITIAL_OFFSET
 
 
 class LetterPrior:
@@ -15,9 +15,19 @@ class LetterPrior:
         for word in vocabulary():
             counts[word[index]] += 1
         total = sum(counts.values())
-        prior = LetterPrior({letter: count / total for letter, count in counts.items()})
+        prior = LetterPrior(
+            {
+                letter: (count / total) + INITIAL_OFFSET
+                for letter, count in counts.items()
+            }
+        )
         prior.normalise()
         return prior
+
+    @staticmethod
+    def uniform() -> "LetterPrior":
+        counts = {letter: 1 / 26 for letter in ALPHABET}
+        return LetterPrior(counts)
 
     def __str__(self) -> str:
         return "".join(sorted(ALPHABET, key=lambda l: self[l]))
@@ -42,12 +52,9 @@ class LetterPrior:
     def entropy(self) -> float:
         return sum(-p * log(p) for p in self._probabilities.values() if p > 0.0)
 
-    def feedback_black(self, letter: str, hard: bool):
-        if hard:
-            self._probabilities[letter] = 0.0
-        else:
-            self._probabilities[letter] /= INFERENCE_FACTOR
-            self.normalise()
+    def feedback_black(self, letter: str):
+        self._probabilities[letter] = 0.0
+        self.normalise()
 
     def feedback_yellow(self, letter: str):
         # NOTE: called for a yellow in a different position; yellows in this position

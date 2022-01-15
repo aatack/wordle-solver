@@ -1,7 +1,8 @@
 from vocabulary import Vocabulary, basic, comprehensive
 from word_prior import WordPrior
 
-prior = WordPrior.prior(basic)
+# prior = WordPrior.prior(basic)
+prior = WordPrior.uniform()
 vocabulary = Vocabulary(set(basic()))
 
 while True:
@@ -14,7 +15,7 @@ while True:
     word, colours = feedback.split()
     prior.feedback(word, [int(c) for c in colours])
 
-    # vocabulary.prune(prior)
+    vocabulary.prune(prior)
     print(f"Words remaining: {len(vocabulary)}")
 
     print("Current prior:")
