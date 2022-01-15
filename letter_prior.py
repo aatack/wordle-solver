@@ -37,9 +37,12 @@ class LetterPrior:
     def entropy(self) -> float:
         return sum(-p * log(p) for p in self._probabilities.values() if p > 0.0)
 
-    def feedback_black(self, letter: str):
-        self._probabilities[letter] /= INFERENCE_FACTOR
-        self.normalise()
+    def feedback_black(self, letter: str, hard: bool):
+        if hard:
+            self._probabilities[letter] = 0.0
+        else:
+            self._probabilities[letter] /= INFERENCE_FACTOR
+            self.normalise()
 
     def feedback_yellow(self, letter: str):
         # NOTE: called for a yellow in a different position; yellows in this position

@@ -42,12 +42,15 @@ class WordPrior:
         for index, (letter, colour) in enumerate(zip(word, colours)):
             if colour == Colours.BLACK:
                 for prior in self._letter_priors:
-                    prior.feedback_black(letter)
+                    if word.count(letter) == 1:
+                        prior.feedback_black(letter, hard=True)
+                    else:
+                        prior.feedback_yellow(letter)
 
             elif colour == Colours.YELLOW:
                 for i, prior in enumerate(self._letter_priors):
-                    if i == index:
-                        prior.feedback_black(letter)
+                    if i == index and word.count(letter) == 1:
+                        prior.feedback_black(letter, hard=True)
                     else:
                         prior.feedback_yellow(letter)
 
@@ -96,7 +99,7 @@ class WordPrior:
     def best_guess_minimise_entropy(self, vocabulary: Set[str]) -> Tuple[str, float]:
         vocabulary = list(vocabulary)
 
-        count = 25
+        count = 100
         minimal_vocabulary = list(vocabulary)[:: len(vocabulary) // count]
         answers = [self.sample(vocabulary) for _ in range(count)]
 
