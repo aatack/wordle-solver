@@ -1,4 +1,5 @@
 from copy import deepcopy
+from os import P_OVERLAY
 from random import uniform
 from typing import Callable, Iterator, List, Optional, Set, Tuple
 
@@ -22,7 +23,10 @@ class WordPrior:
         probability = 1.0
         for letter, prior in zip(word, self._letter_priors):
             probability *= prior[letter]
-        return probability * (0.1 if len(set(word)) != 5 else 1)
+        return probability
+
+    def __str__(self) -> str:
+        return "\n".join(str(prior) for prior in self._letter_priors)
 
     def normalise(self):
         for prior in self._letter_priors:
@@ -42,14 +46,11 @@ class WordPrior:
         for index, (letter, colour) in enumerate(zip(word, colours)):
             if colour == Colours.BLACK:
                 for prior in self._letter_priors:
-                    if word.count(letter) == 1:
-                        prior.feedback_black(letter, hard=True)
-                    else:
-                        prior.feedback_yellow(letter)
+                    prior.feedback_black(letter, hard=True)
 
             elif colour == Colours.YELLOW:
                 for i, prior in enumerate(self._letter_priors):
-                    if i == index and word.count(letter) == 1:
+                    if i == index:
                         prior.feedback_black(letter, hard=True)
                     else:
                         prior.feedback_yellow(letter)
@@ -98,5 +99,6 @@ class WordPrior:
         ratios = [(word, self.entropy_ratio(word, answers)) for word in tqdm(guesses)]
         return min(ratios, key=lambda p: p[1])
 
-    def best_guess_guess_answer(self, vocabulary: "Vocabulary") -> str:
-        return max(vocabulary.all_words(), key=lambda word: self[word])
+    def best_guess_guess_answer(self, vocabulary: "Vocabulary") -> Tuple[str, float]:
+        word = max(vocabulary.all_words(), key=lambda word: self[word])
+        return word, self[word]

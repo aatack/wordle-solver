@@ -1,7 +1,7 @@
 from vocabulary import Vocabulary, basic, comprehensive
 from word_prior import WordPrior
 
-prior = WordPrior.prior(comprehensive)
+prior = WordPrior.prior(basic)
 vocabulary = Vocabulary(set(basic()))
 
 while True:
@@ -16,3 +16,8 @@ while True:
 
     # vocabulary.prune(prior)
     print(f"Words remaining: {len(vocabulary)}")
+
+    print("Current prior:")
+    print(prior)
+    print()
+

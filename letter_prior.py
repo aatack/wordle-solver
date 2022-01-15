@@ -11,11 +11,16 @@ from parameters import ALPHABET, INFERENCE_FACTOR
 class LetterPrior:
     @staticmethod
     def prior(vocabulary: Callable[[], Iterator[str]], index: int) -> "LetterPrior":
-        counts = defaultdict(lambda: 0)
+        counts = {letter: 0.0 for letter in ALPHABET}
         for word in vocabulary():
             counts[word[index]] += 1
         total = sum(counts.values())
-        return LetterPrior({letter: count / total for letter, count in counts.items()})
+        prior = LetterPrior({letter: count / total for letter, count in counts.items()})
+        prior.normalise()
+        return prior
+
+    def __str__(self) -> str:
+        return "".join(sorted(ALPHABET, key=lambda l: self[l]))
 
     def __init__(self, probabilities: Dict[str, float]):
         self._probabilities = probabilities
