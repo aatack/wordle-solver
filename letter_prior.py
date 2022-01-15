@@ -38,7 +38,7 @@ class LetterPrior:
         return sum(-p * log(p) for p in self._probabilities.values() if p > 0.0)
 
     def feedback_black(self, letter: str):
-        self._probabilities[letter] = 0.0
+        self._probabilities[letter] /= INFERENCE_FACTOR
         self.normalise()
 
     def feedback_yellow(self, letter: str):
@@ -48,11 +48,9 @@ class LetterPrior:
         self.normalise()
 
     def feedback_green(self, letter: str):
-        letters = set(self._probabilities.keys())
-        letters.remove(letter)
-        for _letter in letters:
-            self._probabilities[_letter] = 0.0
-        self.normalise()
+        self._probabilities = {
+            _letter: (1.0 if _letter == letter else 0.0) for _letter in ALPHABET
+        }
 
     def sample(self) -> str:
         threshold = uniform(0, 1)

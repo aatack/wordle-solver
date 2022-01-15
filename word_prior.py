@@ -40,7 +40,8 @@ class WordPrior:
     def feedback(self, word: str, colours: List[int]):
         for index, (letter, colour) in enumerate(zip(word, colours)):
             if colour == Colours.BLACK:
-                self._letter_priors[index].feedback_black(letter)
+                for prior in self._letter_priors:
+                    prior.feedback_black(letter)
 
             elif colour == Colours.YELLOW:
                 for i, prior in enumerate(self._letter_priors):
@@ -83,7 +84,7 @@ class WordPrior:
         return self.posterior(guess, answers).total_entropy / self.total_entropy
 
     def best_guess_minimise_entropy(self, vocabulary: Set[str]) -> Tuple[str, float]:
-        answers = [self.sample() for _ in range(25)]
+        answers = list(vocabulary)[:: len(vocabulary) // 12]
         ratios = [
             (word, self.entropy_ratio(word, answers)) for word in tqdm(vocabulary)
         ]
