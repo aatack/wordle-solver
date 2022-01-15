@@ -2,6 +2,7 @@ from copy import deepcopy
 from typing import Callable, Iterator, List, Optional, Set, Tuple
 
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 from feedback import generate_feedback
 from letter_prior import LetterPrior
@@ -81,8 +82,12 @@ class WordPrior:
     def entropy_ratio(self, guess: str, answers: List[str]) -> float:
         return self.posterior(guess, answers).total_entropy / self.total_entropy
 
-    def best_guess_minimise_entropy(self, vocabulary: Set[str]) -> str:
-        raise NotImplementedError()
+    def best_guess_minimise_entropy(self, vocabulary: Set[str]) -> Tuple[str, float]:
+        answers = [self.sample() for _ in range(25)]
+        ratios = [
+            (word, self.entropy_ratio(word, answers)) for word in tqdm(vocabulary)
+        ]
+        return min(ratios, key=lambda p: p[1])
 
     def best_guess_guess_answer(self, vocabulary: Set[str]) -> str:
-        raise NotImplementedError()
+        return max([(word, self[word]) for word in vocabulary], key=lambda p: p[1])

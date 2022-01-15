@@ -38,14 +38,12 @@ class LetterPrior:
         return sum(-p * log(p) for p in self._probabilities.values() if p > 0.0)
 
     def feedback_black(self, letter: str):
-        del self._probabilities[letter]
+        self._probabilities[letter] = 0.0
         self.normalise()
 
     def feedback_yellow(self, letter: str):
         # NOTE: called for a yellow in a different position; yellows in this position
         #       will actually lead to a black feedback given to this prior
-        if letter not in self._probabilities:
-            self._probabilities[letter] = 0.0
         self._probabilities[letter] *= INFERENCE_FACTOR
         self.normalise()
 
@@ -53,7 +51,7 @@ class LetterPrior:
         letters = set(self._probabilities.keys())
         letters.remove(letter)
         for _letter in letters:
-            del self._probabilities[_letter]
+            self._probabilities[_letter] = 0.0
         self.normalise()
 
     def sample(self) -> str:
