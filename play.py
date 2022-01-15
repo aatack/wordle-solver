@@ -17,7 +17,7 @@ while True:
     word, colours = feedback.split()
     prior.feedback(word, [int(c) for c in colours])
 
-    vocabulary.prune(prior)
+    # vocabulary.prune(prior)
     print(f"Words remaining: {len(vocabulary)}")
 
     print("Current prior:")
