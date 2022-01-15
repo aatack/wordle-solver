@@ -1,4 +1,5 @@
-from typing import Callable, Iterator, List
+from copy import deepcopy
+from typing import Callable, Iterator, List, Tuple
 
 import matplotlib.pyplot as plt
 
@@ -57,3 +58,9 @@ class WordPrior:
 
             else:
                 raise ValueError("Invalid colour")
+
+    def sample(self) -> str:
+        return "".join(prior.sample() for prior in self._letter_priors)
+
+    def copy(self) -> "WordPrior":
+        return deepcopy(self)

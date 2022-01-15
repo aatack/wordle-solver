@@ -1,5 +1,6 @@
 from collections import defaultdict
 from math import log
+from random import uniform
 from typing import Callable, Dict, Iterator
 
 import matplotlib.pyplot as plt
@@ -38,14 +39,28 @@ class LetterPrior:
 
     def feedback_black(self, letter: str):
         del self._probabilities[letter]
+        self.normalise()
 
     def feedback_yellow(self, letter: str):
         # NOTE: called for a yellow in a different position; yellows in this position
         #       will actually lead to a black feedback given to this prior
+        if letter not in self._probabilities:
+            self._probabilities[letter] = 0.0
         self._probabilities[letter] *= INFERENCE_FACTOR
+        self.normalise()
 
     def feedback_green(self, letter: str):
         letters = set(self._probabilities.keys())
         letters.remove(letter)
         for _letter in letters:
             del self._probabilities[_letter]
+        self.normalise()
+
+    def sample(self) -> str:
+        threshold = uniform(0, 1)
+        cumulative = 0.0
+        for letter in ALPHABET:
+            cumulative += self[letter]
+            if cumulative >= threshold:
+                return letter
+        return "z"
