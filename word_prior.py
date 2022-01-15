@@ -5,4 +5,4 @@ from letter_prior import LetterPrior
 
 class WordPrior:
     def __init__(self, letter_priors: List[LetterPrior]):
-        pass
+        self._letter_priors = letter_priors
