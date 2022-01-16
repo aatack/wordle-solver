@@ -97,8 +97,8 @@ class WordPrior:
     def best_guess_minimise_entropy(
         self, vocabulary: "Vocabulary"
     ) -> Tuple[str, float]:
-        answers_count = 20
-        guesses_count = 20
+        answers_count = 200
+        guesses_count = 200
 
         # TODO: turn these into policy hyperparameters
 

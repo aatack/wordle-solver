@@ -1,0 +1,7 @@
+-   See TODOs around the folder.
+-   Hyperparameter sweep.
+-   Only allow final guesses from the simplified list.
+-   Consider using p > n / (n + 1) for the guess criterion.
+-   Catch exceptions when typing.
+-   Do not display zero-probability letters, and show them in descending order.
+-   Once 5 letters have been seen, set probability of the remaining letters to zero.
