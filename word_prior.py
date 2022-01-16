@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from feedback import generate_feedback
 from letter_prior import LetterPrior
-from parameters import ALPHABET, Colours
+from parameters import ALPHABET, ANSWERS_COUNT, GUESSES_COUNT, Colours
 
 
 class WordPrior:
@@ -97,14 +97,11 @@ class WordPrior:
     def best_guess_minimise_entropy(
         self, vocabulary: "Vocabulary"
     ) -> Tuple[str, float]:
-        answers_count = 200
-        guesses_count = 200
-
         # TODO: turn these into policy hyperparameters
 
         # answers = vocabulary.sample(count, self)
-        answers = [self.sample() for _ in range(answers_count)]
-        guesses = vocabulary.uniform_sample(guesses_count)
+        answers = [self.sample() for _ in range(ANSWERS_COUNT)]
+        guesses = vocabulary.uniform_sample(GUESSES_COUNT)
         # guesses = vocabulary.sample(count, self)
 
         ratios = [(word, self.entropy_ratio(word, answers)) for word in tqdm(guesses)]
