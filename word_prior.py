@@ -1,7 +1,5 @@
 from copy import deepcopy
-from os import P_OVERLAY, stat
-from random import uniform
-from typing import Callable, Iterator, List, Optional, Set, Tuple
+from typing import Any, Callable, Iterator, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -94,9 +92,11 @@ class WordPrior:
     def entropy_ratio(self, guess: str, answers: List[str]) -> float:
         return self.posterior(guess, answers).total_entropy / self.total_entropy
 
-    def best_guess_minimise_entropy(
-        self, vocabulary: "Vocabulary"
-    ) -> Tuple[str, float]:
+    def best_guess_minimise_entropy(self, vocabulary: Any) -> Tuple[str, float]:
+        from vocabulary import Vocabulary
+
+        assert isinstance(vocabulary, Vocabulary)
+
         # TODO: turn these into policy hyperparameters
 
         # answers = vocabulary.sample(count, self)
@@ -107,7 +107,11 @@ class WordPrior:
         ratios = [(word, self.entropy_ratio(word, answers)) for word in tqdm(guesses)]
         return min(ratios, key=lambda p: p[1])
 
-    def best_guess_guess_answer(self, vocabulary: "Vocabulary") -> Tuple[str, float]:
+    def best_guess_guess_answer(self, vocabulary: Any) -> Tuple[str, float]:
+        from vocabulary import Vocabulary
+
+        assert isinstance(vocabulary, Vocabulary)
+
         probabilities = [(word, self[word]) for word in vocabulary.all_words()]
         word, probability = max(probabilities, key=lambda p: p[1])
         return word, probability / sum([p[1] for p in probabilities])

@@ -1,4 +1,3 @@
-from collections import defaultdict
 from math import log
 from random import uniform
 from typing import Callable, Dict, Iterator

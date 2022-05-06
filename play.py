@@ -1,11 +1,9 @@
-from vocabulary import Vocabulary, basic, comprehensive
+from vocabulary import Vocabulary, comprehensive
 from word_prior import WordPrior
 
+# TODO: turn this into a hyperparameter
 to_use = comprehensive
 
-# TODO: turn this into a hyperparameter
-
-# prior = WordPrior.prior(to_use)
 prior = WordPrior.uniform()
 vocabulary = Vocabulary(set(to_use()))
 
@@ -30,4 +28,3 @@ while True:
     print(f"Current prior: (entropy = {prior.total_entropy})")
     print(prior)
     print()
-
