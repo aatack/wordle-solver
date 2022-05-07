@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from parameters import Colours
+from solver.parameters import Colours
 
 
 def generate_feedback(guess: str, answer: str) -> Iterator[str]:

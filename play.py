@@ -1,5 +1,5 @@
-from vocabulary import Vocabulary, comprehensive
-from word_prior import WordPrior
+from solver.vocabulary import Vocabulary, comprehensive
+from solver.word_prior import WordPrior
 
 # TODO: turn this into a hyperparameter
 to_use = comprehensive

@@ -4,7 +4,7 @@ from typing import Callable, Dict, Iterator
 
 import matplotlib.pyplot as plt
 
-from parameters import ALPHABET, INFERENCE_FACTOR, INITIAL_OFFSET
+from solver.parameters import ALPHABET, INFERENCE_FACTOR, INITIAL_OFFSET
 
 
 class LetterPrior:

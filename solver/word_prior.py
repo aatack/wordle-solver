@@ -4,9 +4,9 @@ from typing import Any, Callable, Iterator, List, Optional, Tuple
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-from feedback import generate_feedback
-from letter_prior import LetterPrior
-from parameters import ALPHABET, ANSWERS_COUNT, GUESSES_COUNT, Colours
+from solver.feedback import generate_feedback
+from solver.letter_prior import LetterPrior
+from solver.parameters import ALPHABET, ANSWERS_COUNT, GUESSES_COUNT, Colours
 
 
 class WordPrior:
@@ -93,7 +93,7 @@ class WordPrior:
         return self.posterior(guess, answers).total_entropy / self.total_entropy
 
     def best_guess_minimise_entropy(self, vocabulary: Any) -> Tuple[str, float]:
-        from vocabulary import Vocabulary
+        from solver.vocabulary import Vocabulary
 
         assert isinstance(vocabulary, Vocabulary)
 
@@ -108,7 +108,7 @@ class WordPrior:
         return min(ratios, key=lambda p: p[1])
 
     def best_guess_guess_answer(self, vocabulary: Any) -> Tuple[str, float]:
-        from vocabulary import Vocabulary
+        from solver.vocabulary import Vocabulary
 
         assert isinstance(vocabulary, Vocabulary)
 

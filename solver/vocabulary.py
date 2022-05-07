@@ -1,7 +1,7 @@
 from random import choices
 from typing import Iterator, List, Set
 
-from word_prior import WordPrior
+from solver.word_prior import WordPrior
 
 
 def basic() -> Iterator[str]:
