@@ -1,30 +1,20 @@
-from solver.vocabulary import Vocabulary, comprehensive
-from solver.word_prior import WordPrior
+from solver import Solver
 
-# TODO: turn this into a hyperparameter
-to_use = comprehensive
-
-prior = WordPrior.uniform()
-vocabulary = Vocabulary(set(to_use()))
+solver = Solver()
 
 current_guess = 0
 while True:
-    current_guess += 1
-
     print("\n" * 5)
     print("Current guess:", current_guess)
-    print(
-        prior.best_guess_guess_answer(vocabulary),
-        prior.best_guess_minimise_entropy(vocabulary),
-    )
+    print(solver.best_answer(), solver.best_entropy())
 
     feedback = input("> ")
     word, colours = feedback.split()
-    prior.feedback(word, [int(c) for c in colours])
+    solver.guess(word, [int(c) for c in colours])
 
     # vocabulary.prune(prior)
-    print(f"Words remaining: {len(vocabulary)}")
+    print(f"Words remaining: {solver.words_remaining()}")
 
-    print(f"Current prior: (entropy = {prior.total_entropy})")
-    print(prior)
+    print(f"Current prior: (entropy = {solver.prior.total_entropy})")
+    print(solver.prior)
     print()
