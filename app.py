@@ -2,8 +2,18 @@ import streamlit as st
 
 OPTIONS = ["Green", "Yellow", "Grey"]
 
-st.write("# Wordle Solver")
 
+class A:
+    def __init__(self):
+        self.x = 0
+
+
+if "A" not in st.session_state:
+    st.session_state["A"] = A()
+
+st.latex(st.session_state.A.x)
+
+st.write("# Wordle Solver")
 
 st.write(
     "Test app for working out how to use Streamlit, and also to provide a nicer "
@@ -30,11 +40,11 @@ if len(guess) == 5:
         block.empty()
         with st.spinner("Loading"):
             import random
-            import time
 
-            time.sleep(1)
+            print(guess, [2 - OPTIONS.index(colour) for colour in colours])
             st.session_state.random = random.randint(1, 100)
-            block.info("Finished")
 
-        time.sleep(1)
+        st.session_state.A.x += 1
         st.experimental_rerun()
+
+    st.write("---")
