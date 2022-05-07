@@ -1,6 +1,6 @@
 import streamlit as st
 
-# st.set_page_config(layout="wide")
+OPTIONS = ["Green", "Yellow", "Grey"]
 
 st.write("# Wordle Solver")
 
@@ -9,30 +9,14 @@ st.write(
     "UI for the Wordle bot I wrote a few months ago."
 )
 
-
-def store_guess(g: str):
-    print("Storing", g)
-    st.session_state.guess = g
-
-
-guess = st.session_state.guess if "guess" in st.session_state else ""
-
-if len(guess) < 5:
-    update = st.text_input(label="", value=guess, max_chars=5)
-    print("Guessed:", update)
-    if update != guess:
-        st.session_state.guess = update
-        # Only needed if the state up to this point wants to be updated?
-        st.experimental_rerun()
-
+st.write("---")
+guess = st.text_input("Word entered", "", max_chars=5).lower()
 
 if len(guess) == 5:
-    columns = st.columns(len(guess))
+    st.write("---")
 
-    for i, (column, character) in enumerate(zip(columns, guess)):
-        column.button(character, key=str(i))
-
-    def reset_guess():
-        st.session_state.guess = ""
-
-    st.button("Reset", on_click=reset_guess)
+    columns = st.columns(5)
+    colours = [
+        column.radio(character.upper(), OPTIONS, index=2, key=str(i))
+        for i, (column, character) in enumerate(zip(columns, guess))
+    ]
