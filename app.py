@@ -56,7 +56,7 @@ try:
                 delta_color="off",
             )
         except ZeroDivisionError:
-            st.success("Success")
+            st.error("Degenerate probability distribution")
 
     with right:
         try:
@@ -72,7 +72,7 @@ try:
             if probability >= 0.999:
                 st.success("The word has been found")
             else:
-                st.error("The word is not in the vocabulary list")
+                st.error("Degenerate probability distribution")
 
             if st.button("Reset"):
                 st.session_state.clear()
@@ -86,5 +86,6 @@ except AssertionError as e:
     st.experimental_rerun()
 
 # Still to do:
-# - Tidy up this file
-# - Add plots of the historical data (letter/word distributions, etc.)
+# - tidy up this file
+# - add plots of the historical data (letter/word distributions, etc.)
+# - use a progress bar in place of a spinner
