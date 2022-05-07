@@ -10,12 +10,29 @@ st.write(
 )
 
 
-with st.empty():
-    guess = st.text_input("Guess", max_chars=5)
+def store_guess(g: str):
+    print("Storing", g)
+    st.session_state.guess = g
 
-    if len(guess) > 0:
-        with st.container():
-            columns = st.columns([1] * len(guess))
 
-            for i, (column, character) in enumerate(zip(columns, guess)):
-                column.button(character, key=str(i))
+guess = st.session_state.guess if "guess" in st.session_state else ""
+
+if len(guess) < 5:
+    update = st.text_input(label="", value=guess, max_chars=5)
+    print("Guessed:", update)
+    if update != guess:
+        st.session_state.guess = update
+        # Only needed if the state up to this point wants to be updated?
+        st.experimental_rerun()
+
+
+if len(guess) == 5:
+    columns = st.columns(len(guess))
+
+    for i, (column, character) in enumerate(zip(columns, guess)):
+        column.button(character, key=str(i))
+
+    def reset_guess():
+        st.session_state.guess = ""
+
+    st.button("Reset", on_click=reset_guess)
