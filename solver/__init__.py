@@ -7,7 +7,7 @@ from solver.word_prior import WordPrior
 class Solver:
     def __init__(self):
         # TODO: make hyperparameters out of which ones should be used here
-        self.prior = WordPrior.prior(comprehensive)
+        self.prior = WordPrior.uniform()
         self.vocabulary = Vocabulary(set(comprehensive()))
 
         self.guesses_made = 0
